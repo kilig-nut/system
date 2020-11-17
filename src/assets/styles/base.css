@@ -1,0 +1,7 @@
+body{
+    margin: 0;
+    padding: 0;
+}
+html,body,#app,.home-page,.el-container{
+    height: 100%;
+}
