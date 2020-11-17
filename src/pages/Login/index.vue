@@ -11,9 +11,25 @@
         <el-button type="primary" @click="submitForm('loginForm')">提交</el-button>
       </el-form-item>
     </el-form>
+    <div class="bg-video">
+      <!-- autoplay 视频就绪后立即播放
+      muted 规定视频的音频输出应该被静音
+      loop 当媒介文件完成播放后再次开始播放 -->
+      <video class="v1" autoplay muted loop>
+        <source src="@/assets/video/bg_video.mp4">
+      </video>
+    </div>
   </div>
 </template>
 <script>
+//登入逻辑的实现
+//1.收集用户输入的username和password传递给后端
+//this.loginForm.username和this.loginForm.password
+//2.登入通过后，将后端返回的token存在本地
+//3.每次请求的时候，携带token
+//4.展示token校验正确的数据
+//5.校验不通过，跳转到登入页
+  import {login} from "@/api";
   export default {
     data() {
       //jsDoc注释方式
@@ -31,7 +47,7 @@
         //如果验证不通过
         //!uPattern.test(value)
         if(!value){
-          //就显示 传参
+          //验证没通过 传参
           callback("4到16位（字母，数字，下划线，减号")
         }else{
           //验证通过则不显示 不传参
@@ -51,8 +67,7 @@
       return {
         loginForm: {
           username: '',
-          password: '',
-          age: ''
+          password: ''
         },
         rules: {
           username: [
@@ -71,6 +86,25 @@
         //$refs可以得到引用的实例或者引用的dom
         this.$refs[formName].validate((valid) => {
           if (valid) {//代表本地校验通过
+            // console.log(this.loginForm.username,this.loginForm.password);
+            // 1.收集用户输入的username和password传递给后端
+            // login(this.loginForm.username,this.loginForm.password);
+            let {username,password} = this.loginForm;
+            login(username,password)//发送请求
+            .then(res=>{//请求成功
+              console.log(res);
+              if(res.data.state){//如果登录成功
+                localStorage.setItem('token',res.token)
+                //跳转到首页
+                this.$router.push("/");//往当前浏览器栈中添加一项
+              }else{
+                //用户名或者密码错误
+                alert("用户名或者密码错误")
+              }
+            })
+            .catch(err=>{//请求失败
+              console.log(err);
+            })
             alert('submit!');
           } else {
             console.log('error submit!!');
@@ -85,8 +119,26 @@
   }
 </script>
 <style scoped>
-/* 表单样式 */
+/* 表单 */
 .el-form{
   width: 400px;
+  position: absolute;
+  top: 200px;
+  right: 300px;
+  background-color: rgba(0, 0, 255, 0.7);
+  padding-top: 20px;
+}
+/* 背景视频 */
+.bg-video{
+  width: 100%;
+  height: auto;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  position: absolute;
+}
+.v1{
+  width: 100%;
+  height: auto;
 }
 </style>
