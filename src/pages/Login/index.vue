@@ -26,10 +26,11 @@
 //1.收集用户输入的username和password传递给后端
 //this.loginForm.username和this.loginForm.password
 //2.登入通过后，将后端返回的token存在本地
-//3.每次请求的时候，携带token
+//3.每次请求的时候，携带token 到请求头 authorization
 //4.展示token校验正确的数据
 //5.校验不通过，跳转到登入页
   import {login} from "@/api";
+  import {mapMutations} from "vuex"//引入模块
   export default {
     data() {
       //jsDoc注释方式
@@ -82,30 +83,49 @@
       };
     },
     methods: {
+      ...mapMutations(['SET_USERINFO']),//映射
       submitForm(formName) {
         //$refs可以得到引用的实例或者引用的dom
         this.$refs[formName].validate((valid) => {
           if (valid) {//代表本地校验通过
-            // console.log(this.loginForm.username,this.loginForm.password);
+            //打开登入加载动画
+            const loading = this.$loading({
+              lock: true,
+              text: 'Loading',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
+
             // 1.收集用户输入的username和password传递给后端
             // login(this.loginForm.username,this.loginForm.password);
             let {username,password} = this.loginForm;
             login(username,password)//发送请求
             .then(res=>{//请求成功
+
+            //只要服务器响应了就关掉登入加载动画
+              loading.close()
+
               console.log(res);
               if(res.data.state){//如果登录成功
-                localStorage.setItem('token',res.token)
+                //登入成功提示
+                this.$message.success("登录成功")
+                //记录下token
+                localStorage.setItem('wf-token',res.data.token)
+                //记录下用户名
+                localStorage.setItem("wf-userInfo",JSON.stringify(res.data.userInfo))
+                //更改vuex中state['userInfo']的值
+                this.SET_USERINFO(res.data.userInfo)
                 //跳转到首页
                 this.$router.push("/");//往当前浏览器栈中添加一项
               }else{
                 //用户名或者密码错误
-                alert("用户名或者密码错误")
+                this.$message.error('用户名或者密码错误');
               }
             })
             .catch(err=>{//请求失败
               console.log(err);
             })
-            alert('submit!');
+            // alert('submit!');
           } else {
             console.log('error submit!!');
             return false;

@@ -2,61 +2,55 @@
   <div class="home-page">
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside width="200px">
-        <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
-          <el-radio-button :label="false">展开</el-radio-button>
-          <el-radio-button :label="true">收起</el-radio-button>
-        </el-radio-group>
-        <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
-          <el-submenu index="1">
+      <el-aside width="200">
+        <!-- handleOpen菜单展开的时候触发 handleClose菜单关闭的时候触发 -->
+        <!-- collapse是否展开收齐 -->
+        <!-- router=true 是否进行路由跳转 将Index作为路径进行跳转页面 -->
+        <el-menu default-active="1-4-1" class="el-menu-vertical-demo" :collapse="isCollapse" :router=true>
+          <!-- <el-menu-item index="1-1">管理首页</el-menu-item>
+          <el-submenu index="/students">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span slot="title">导航一</span>
+              <span slot="title">学员管理</span>
             </template>
             <el-menu-item-group>
-              <span slot="title">分组一</span>
-              <el-menu-item index="1-1">选项1</el-menu-item>
-              <el-menu-item index="1-2">选项2</el-menu-item>
+              <el-menu-item index="1-1">学员项目管理</el-menu-item>
+              <el-menu-item index="1-2">学员资料</el-menu-item>
+              <el-menu-item index="1-3">学院宿舍</el-menu-item>
             </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="1-3">选项3</el-menu-item>
-            </el-menu-item-group>
-            <el-submenu index="1-4">
-              <span slot="title">选项4</span>
-              <el-menu-item index="1-4-1">选项1</el-menu-item>
-            </el-submenu>
           </el-submenu>
-          <el-menu-item index="2">
-            <i class="el-icon-menu"></i>
-            <span slot="title">导航二</span>
-          </el-menu-item>
-          <el-menu-item index="3" disabled>
-            <i class="el-icon-document"></i>
-            <span slot="title">导航三</span>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <i class="el-icon-setting"></i>
-            <span slot="title">导航四</span>
-          </el-menu-item>
+          <el-menu-item index="1-1">考勤管理</el-menu-item>
+          <el-menu-item index="1-1">数据统计</el-menu-item>
+          <el-menu-item index="1-1">我的中心</el-menu-item> -->
+          <qf-sub-menu :sideMenu="menuList"></qf-sub-menu>
         </el-menu>
       </el-aside>
       <el-container>
         <!-- 头部 -->
         <el-header>
-          <el-row type="flex" class="row-bg" justify="space-between">
-            <el-col :span="6"><div class="grid-content bg-purple">=</div></el-col>
+          <el-row type="flex" class="row-bg" justify="space-around">
+            <el-col :span="6">
+              <div class="grid-content bg-purple">
+                <i class="iconfont icon-shouqi" @click="isCollapse=!isCollapse"></i>
+              </div>
+            </el-col>
             <el-col :span="6"><div class="grid-content bg-purple-light">千锋管理系统</div></el-col>
             <el-col :span="6">
               <div class="grid-content bg-purple">
+                <!-- 头像 -->
+                <el-avatar class="head-portrait" :size="50" :src="squareUrl"></el-avatar>
                 <span>欢迎您</span>
-                <a>管理员</a>
-                <a>退出</a>
+                <!-- 通过vuex渲染昵称 -->
+                <b class="nickname">{{userInfo.nickname}}</b>
+                <span class="quit" @click="quit">退出</span>
               </div>
             </el-col>
           </el-row>
         </el-header>
         <!-- 主体 -->
-        <el-main>Main</el-main>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -70,11 +64,17 @@
   </el-container>
 </el-container>
 <script>
+import {getLoginLog} from "@/api";
+import {mapState} from "vuex";
 // 侧边栏
   export default {
+    computed: {
+      ...mapState(['userInfo','menuList'])
+    },
     data() {
       return {
-        isCollapse: true
+        isCollapse: false,
+        squareUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png"
       };
     },
     methods: {
@@ -83,11 +83,32 @@
       },
       handleClose(key, keyPath) {
         console.log(key, keyPath);
+      },
+      quit(){
+        //退出登入
+        //1.清除token和userInfo
+        localStorage.removeItem("wf-token");
+        localStorage.removeItem("wf-userInfo");
+        //2.跳转到登入页
+        this.$router.push("/login")
+        //刷新页面
+        window.location.reload()
       }
+    },
+    mounted () {
+      getLoginLog()
+      .then(res=>{
+        console.log(res);
+      })
     }
   }
 </script>
-<style>
+<style scoped>
+/* 收起图标样式 */
+  .icon-shouqi{
+    color: white;
+    cursor: pointer;
+  }
 /* container样式 */
   .el-header, .el-footer {
     background-color: #B3C0D1;
@@ -130,14 +151,15 @@
   }
 
   /* 头部样式 */
-  .el-row {
+  /* .el-row {
     margin-bottom: 20px;
     &:last-child {
       margin-bottom: 0;
     }
-  }
+  } */
   .el-col {
     border-radius: 4px;
+    background-color: #B3C0D1
   }
   .bg-purple-dark {
     background: #99a9bf;
@@ -153,7 +175,17 @@
     min-height: 36px;
   }
   .row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
+    /* padding: 10px 0; */
+    background-color: #B3C0D1;
+  }
+  /* 头像 */
+  .head-portrait{
+    vertical-align: middle;
+  }
+  /* 退出 */
+  .quit{
+    /* 鼠标变成手 */
+    cursor: pointer;
+    color: white;
   }
 </style>

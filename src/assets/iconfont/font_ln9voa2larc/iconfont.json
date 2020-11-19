@@ -1,0 +1,72 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "643764",
+      "name": "资料",
+      "font_class": "14",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "1263267",
+      "name": "考勤",
+      "font_class": "kaoqin",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "1915205",
+      "name": "数据统计",
+      "font_class": "icon-test",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "1938105",
+      "name": "我的中心-线",
+      "font_class": "wodezhongxin-xian",
+      "unicode": "e6ec",
+      "unicode_decimal": 59116
+    },
+    {
+      "icon_id": "2080133",
+      "name": "宿舍",
+      "font_class": "sushe",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    },
+    {
+      "icon_id": "6557199",
+      "name": "首页",
+      "font_class": "faxian-copy",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "7235211",
+      "name": "用户",
+      "font_class": "yonghu",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "8023419",
+      "name": "在读学员",
+      "font_class": "zaiduxueyuan",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "17029961",
+      "name": "项目 (2)",
+      "font_class": "xiangmu2",
+      "unicode": "e69d",
+      "unicode_decimal": 59037
+    }
+  ]
+}
