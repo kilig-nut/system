@@ -1,6 +1,7 @@
 <template>
   <div class="login-page">
     <el-form :model="loginForm" status-icon :rules="rules" ref="loginForm" label-width="100px" class="demo-loginForm">
+      <p>千锋管理系统</p>
       <el-form-item label="用户名" prop="username">
         <el-input type="text" v-model="loginForm.username" autocomplete="off"></el-input>
       </el-form-item>
@@ -113,10 +114,12 @@
                 localStorage.setItem('wf-token',res.data.token)
                 //记录下用户名
                 localStorage.setItem("wf-userInfo",JSON.stringify(res.data.userInfo))
+                // 用户按钮
+                localStorage.setItem('wf-permission-buttons', JSON.stringify(res.data.permission.buttons))
                 //更改vuex中state['userInfo']的值
                 this.SET_USERINFO(res.data.userInfo)
                 //跳转到首页
-                this.$router.push("/");//往当前浏览器栈中添加一项
+                this.$router.push("/Welcome");//往当前浏览器栈中添加一项
               }else{
                 //用户名或者密码错误
                 this.$message.error('用户名或者密码错误');
@@ -145,8 +148,14 @@
   position: absolute;
   top: 200px;
   right: 300px;
-  background-color: rgba(0, 0, 255, 0.7);
+  background: rgba(83, 107, 182, 0.46);
   padding-top: 20px;
+}
+/* 表单标题 */
+.el-form p{
+  font: 20px/25px "";
+  color: white;
+  text-align: center;
 }
 /* 背景视频 */
 .bg-video{
@@ -160,5 +169,11 @@
 .v1{
   width: 100%;
   height: auto;
+}
+.login-page{
+  height: 100%;
+  width: 100%;
+  background: url("../../assets/imgs/bg2.png") no-repeat 200px 100px;
+  overflow: hidden;
 }
 </style>

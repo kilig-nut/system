@@ -6,7 +6,7 @@
         <!-- handleOpen菜单展开的时候触发 handleClose菜单关闭的时候触发 -->
         <!-- collapse是否展开收齐 -->
         <!-- router=true 是否进行路由跳转 将Index作为路径进行跳转页面 -->
-        <el-menu default-active="1-4-1" class="el-menu-vertical-demo" :collapse="isCollapse" :router=true>
+        <el-menu :default-active="$route.path" class="el-menu-vertical-demo" :collapse="isCollapse" :router=true>
           <!-- <el-menu-item index="1-1">管理首页</el-menu-item>
           <el-submenu index="/students">
             <template slot="title">
@@ -49,6 +49,12 @@
         </el-header>
         <!-- 主体 -->
         <el-main>
+          <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item :to="{ path: '/Welcome' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{path:crumb.path}" v-for="crumb in crumbs">
+              {{crumb.meta.name}}
+            </el-breadcrumb-item>
+          </el-breadcrumb>
           <router-view></router-view>
         </el-main>
       </el-container>
@@ -64,12 +70,12 @@
   </el-container>
 </el-container>
 <script>
-import {getLoginLog} from "@/api";
+// import {getLoginLog} from "@/api";
 import {mapState} from "vuex";
 // 侧边栏
   export default {
     computed: {
-      ...mapState(['userInfo','menuList'])
+      ...mapState(['userInfo','menuList','crumbs'])
     },
     data() {
       return {
@@ -79,10 +85,10 @@ import {mapState} from "vuex";
     },
     methods: {
       handleOpen(key, keyPath) {
-        console.log(key, keyPath);
+        // console.log(key, keyPath);
       },
       handleClose(key, keyPath) {
-        console.log(key, keyPath);
+        // console.log(key, keyPath);
       },
       quit(){
         //退出登入
@@ -96,10 +102,10 @@ import {mapState} from "vuex";
       }
     },
     mounted () {
-      getLoginLog()
-      .then(res=>{
-        console.log(res);
-      })
+      // getLoginLog()
+      // .then(res=>{
+      //   // console.log(res);
+      // })
     }
   }
 </script>

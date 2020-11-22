@@ -13,11 +13,37 @@ import "./assets/iconfont/iconfont.css"
 //引入subMenu组件
 import qfSubMenu from "qf-sub-menu"
 // Vue.config.productionTip = false;
+//引入nprogress进度条
+import NProgress from "nprogress"
+import "nprogress/nprogress.css"
+
+import bus from "./utils/bus"
+import has from "./utils/has"//引入鉴权的方法
+Vue.prototype.$has = has;
+Vue.prototype.$bus = bus;
+
 Vue.use(ElementUI);
 Vue.use(qfSubMenu)
 
+//定义全局自定义指令 判断是否具备相应按钮权限
+Vue.directive("haspermission",{
+  bind(el,binding,VNode){
+    let buttons = localStorage.getItem("wf-permission-buttons")
+    if(!has(buttons,binding.value)){
+      //禁用按钮
+      //先储存class类名 在这基础上加上is-disabled禁用按钮
+      let className = el.className;
+      el.className = className + "" + "is-disabled"
+      el.disabled = true;
+    }
+  }
+})
+
 //路由前置钩子(导航守卫)
 router.beforeEach((to,from,next) => {
+  //打开进度条
+  NProgress.start()
+  // NProgress.set(0.99)
   // console.log(to);
   // console.log(from);
   //如何拦截用户
@@ -49,6 +75,14 @@ router.beforeEach((to,from,next) => {
       next({path:"/login"})
     }
   }
+})
+
+//使用后置钩子获取to.matched
+router.afterEach((to,from)=>{
+  var crumblist = to.matched.slice(1);
+  store.commit('SET_CRUMBS', crumblist);
+  //关闭进度条
+  NProgress.done()
 })
 
 import "./utils/recursionRoutes"

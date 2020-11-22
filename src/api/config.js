@@ -1,6 +1,10 @@
 import axios from "axios";//引入axios
 import router from "../router";//引入router
 import ElementUI from "element-ui";//引入elementui
+import NProgress from "nprogress"//引入进度条
+
+//中断请求属性
+// export let CancelToken = axios.CancelToken;
 
 //配置跨域代理
 axios.defaults.baseURL = process.env.NODE_ENV==='development'?"/api":"http://www.chst.vip"

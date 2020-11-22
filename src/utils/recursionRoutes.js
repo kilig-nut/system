@@ -9,8 +9,8 @@
 import allRoutes from "../router/allRoutes"
 import menuList from "../store"
 
-const recursionRoutes = (allRoutes,menuList) => {
-    let userRoutes = []
+const recursionRoutes = (allRoutes=[],menuList=[]) => {
+    let userRoutes = []//最后对比的结果放到这个数组中
     allRoutes.forEach(item=>{
         menuList.forEach(v=>{
             if(item.meta.name === v.name){

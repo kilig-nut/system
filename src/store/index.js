@@ -3,13 +3,13 @@ import Vuex from "vuex";
 import {getMenuList} from "@/api";
 
 //引入allRoutes
-import allRoutes from "../router/allRoutes"
+import allRoutes from "@/router/allRoutes"
 //引入递归函数
-import recursionRoutes from "../utils/recursionRoutes"
+import recursionRoutes from "@/utils/recursionRoutes"
 //引入动态路由dynamicRoutes
-import dynamicRoutes from "../router/dynamicRoutes"
+import dynamicRoutes from "@/router/dynamicRoutes"
 //引入router
-import router from "../router"
+import router from "@/router"
 
 Vue.use(Vuex);
 
@@ -18,13 +18,19 @@ Vue.use(Vuex);
 //逻辑中断
 let userInfo = localStorage.getItem("wf-userInfo") || '{}';
 userInfo = JSON.parse(userInfo);
+let permissionButtons = JSON.parse(localStorage.getItem('wf-permission-buttons')) || {};
 
 export default new Vuex.Store({
   state: {
     userInfo,//用户信息
-    menuList:[]//定义用户侧边栏菜单
+    menuList:[],//定义用户侧边栏菜单
+    crumbs:[],//面包屑
+    permissionButtons
   },
   mutations: {
+    CLEAR_SIDEMENU(state) {
+      state.menuList = []
+    },
     //更改userInfo
     SET_USERINFO(state,payload){
       state.userInfo=payload;
@@ -35,11 +41,17 @@ export default new Vuex.Store({
       //核心方法router.addRoutes(符合路由配置规则的数据)
       // console.log(state.menuList);
       //1.将menuList赋值给dynamicRoutes的children
-      let target = dynamicRoutes.find(item=>item.path==="/")
+      const target = dynamicRoutes.find(item=>item.path==="/")
       target.children = [...state.menuList]
       // console.log(dynamicRoutes);
       //2.动态添加路由配置到router/routes中
       router.addRoutes(dynamicRoutes)
+    },
+    SET_CRUMBS(state,payload){
+      state.crumbs = payload;
+    },
+    SET_PERMISSION_BUTTONS(state, payload) {
+      state.permissionButtons = payload
     }
   },
   actions: {
